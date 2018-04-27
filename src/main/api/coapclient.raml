@@ -1,0 +1,23 @@
+#%RAML 1.0
+title: API that demonstrates the Mule CoAP Client Connector 
+
+baseUri: /
+
+/coapclient:
+  description: Examples requests on coap://coap.me 
+  /ping:
+    get:
+      description: do a ping on a CoAP resource
+      responses:
+        200:
+          body: 
+            text/xhtml:
+              description: "tell whether the CoAP resource is reachable"
+  /discover:
+      get:
+        description: get the list of available CoAP resources
+        responses:
+          200:
+            body: 
+              text/plain:
+                description: "the list of resources on the server converted to text"

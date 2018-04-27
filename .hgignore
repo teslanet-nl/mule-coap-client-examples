@@ -5,3 +5,9 @@ syntax: regexp
 ^\.project$
 syntax: regexp
 ^\.directory$
+syntax: regexp
+^target$
+syntax: regexp
+^catalog$
+syntax: regexp
+^bin$
