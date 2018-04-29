@@ -5,19 +5,116 @@ baseUri: /
 
 /coapclient:
   description: Examples requests on coap://coap.me 
-  /ping:
-    get:
-      description: do a ping on a CoAP resource
-      responses:
-        200:
-          body: 
-            text/xhtml:
-              description: "tell whether the CoAP resource is reachable"
-  /discover:
+  /discovery:
+    description: Discovery requests
+    /ping:
       get:
-        description: get the list of available CoAP resources
+        description: do a ping on a CoAP resource
         responses:
           200:
             body: 
               text/plain:
-                description: "the list of resources on the server converted to text"
+                description: "tell whether the CoAP resource is reachable"
+    /discover:
+        get:
+          description: get the list of available CoAP resources
+          responses:
+            200:
+              body: 
+                text/plain:
+                  description: "the list of resources on the server converted to text"
+  /requests:
+    description: synchronous requests
+    /get:
+        get:
+          description: get the contents of a CoAP resource
+          responses:
+            200:
+              body: 
+                text/plain:
+                  description: "the contents of the resource"
+    /put:
+      get:
+        description: put new contents to a CoAP resource
+        responses:
+          200:
+            body: 
+              text/plain:
+                description: "the contents is delivered and processed"
+    /post:
+      get:
+        description: post new resource to a CoAP server
+        responses:
+          200:
+            body: 
+              text/plain:
+                description: "the resource is delivered and processed"
+    /delete:
+      get:
+        description: delete a resource from a CoAP resource
+        responses:
+          200:
+            body: 
+              text/plain:
+                description: "the resource has been deleted"
+  /async_requests:
+    description: asynchronous requests
+    /get:
+        get:
+          description: get the contents of a CoAP resource
+          responses:
+            200:
+              body: 
+                text/plain:
+                  description: "the contents of the resource retrieved asynchronically"
+    /put:
+      get:
+        description: put new contents to a CoAP resource
+        responses:
+          200:
+            body: 
+              text/plain:
+                description: "the contents is delivered and processed asynchronically"
+    /post:
+      get:
+        description: post new resource to a CoAP server
+        responses:
+          200:
+            body: 
+              text/plain:
+                description: "the resource is delivered and processed asynchronically"
+    /delete:
+      get:
+        description: delete a resource from a CoAP resource
+        responses:
+          200:
+            body: 
+              text/plain:
+                description: "the resource is deleted asynchronically"
+  /observe:
+    description: oberverve requests
+    /start:
+        get:
+          description: start the observation of a CoAP resource
+          responses:
+            200:
+              body: 
+                text/plain:
+                  description: "the result"
+    /stop:
+      get:
+        description: start the observation of a CoAP resource
+        responses:
+          200:
+            body: 
+              text/plain:
+                description: "the result"
+    /list:
+      get:
+        description: list active observations 
+        responses:
+          200:
+            body: 
+              text/plain:
+                description: "list of uri's that are being observed"
+                

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+	http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
+	http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+	http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+	http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+
+	
+	<flow name="get:/coapclient/requests/get:Router">
+		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
+		<set-property propertyName="coap.opt.accept" value="0" doc:name="Set Accept Option" />
+		<coap-client:get config-ref="my_CoAP_Client" path="/query" doc:name="CoAP Get">
+			<coap-client:query-parameters>
+				<coap-client:query-parameter>hello=there</coap-client:query-parameter>
+				<coap-client:query-parameter>how_are=you</coap-client:query-parameter>
+			</coap-client:query-parameters>
+		</coap-client:get>
+		<logger level="INFO" doc:name="Logger" />
+		<choice doc:name="Choice">
+			<when expression="#[ message.inboundProperties['coap.response.success']                and message.inboundProperties['coap.response.code']  == '2.05' ]">
+				<byte-array-to-string-transformer doc:name="Byte Array to String" />
+				<set-payload value="Content is : #[payload]" mimeType="text/plain" doc:name="Content received" />
+			</when>
+			<otherwise>
+				<set-payload value="No Content received!" mimeType="text/plain" doc:name="Fail" />
+			</otherwise>
+		</choice>
+	</flow>
+	
+	<flow name="get:/coapclient/requests/put:Router">
+		<set-payload value="This is new content." doc:name="Set Payload" />
+		<set-property propertyName="coap.opt.content_format" value="0" doc:name="Set Content Format" />
+		<coap-client:put config-ref="my_CoAP_Client" path="/test" doc:name="CoAP Put" />
+		<logger level="INFO" doc:name="Logger" />
+		<choice doc:name="Choice">
+			<when expression="#[ message.inboundProperties['coap.response.success']                                and message.inboundProperties['coap.response.code']  == '2.04' ]">
+				<byte-array-to-string-transformer doc:name="Byte Array to String" />
+				<set-payload value="Content is delivered" mimeType="text/plain" doc:name="Content delivered" />
+			</when>
+			<otherwise>
+				<set-payload value="No Content delivered" mimeType="text/plain" doc:name="Fail" />
+			</otherwise>
+		</choice>
+	</flow>
+	
+	<flow name="get:/coapclient/requests/post:Router">
+		<set-payload value="This is the new resources content." doc:name="Set Payload" />
+		<set-property propertyName="coap.opt.content_format" value="0" doc:name="Set Content Format" />
+		<coap-client:post config-ref="my_CoAP_Client" path="/test" doc:name="CoAP Post" />
+		<logger level="INFO" doc:name="Logger" />
+		<choice doc:name="Choice">
+			<when expression="#[ message.inboundProperties['coap.response.success']                                      and message.inboundProperties['coap.response.code']  == '2.01' ]">
+				<byte-array-to-string-transformer doc:name="Byte Array to String" />
+				<set-payload value="Resource created." mimeType="text/plain" doc:name="Resource created" />
+			</when>
+			<otherwise>
+				<set-payload value="No resource created!" mimeType="text/plain" doc:name="Fail" />
+			</otherwise>
+		</choice>
+	</flow>
+	
+	<flow name="get:/coapclient/requests/delete:Router">
+		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
+		<coap-client:delete config-ref="my_CoAP_Client" path="/test" doc:name="CoAP Delete" />
+		<logger level="INFO" doc:name="Logger" />
+		<choice doc:name="Choice">
+			<when expression="#[ message.inboundProperties['coap.response.success']                                   and message.inboundProperties['coap.response.code']  == '2.02' ]">
+				<byte-array-to-string-transformer doc:name="Byte Array to String" />
+				<set-payload value="Resource is deleted" mimeType="text/plain" doc:name="Resource deleted" />
+			</when>
+			<otherwise>
+				<set-payload value="No resource deleted!" mimeType="text/plain" doc:name="Fail" />
+			</otherwise>
+		</choice>
+	</flow>
+
+</mule>

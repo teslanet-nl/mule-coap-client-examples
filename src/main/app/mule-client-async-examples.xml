@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+	http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
+	http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+	http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+	http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+
+	<flow name="get:/coapclient/async_requests/get:Router">
+		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
+		<set-property propertyName="coap.opt.accept" value="0" doc:name="Set Accept Option" />
+		<coap-client:async-get config-ref="my_CoAP_Client" path="/query" responseHandler="my_handler" doc:name="CoAP Async Get">
+			<coap-client:query-parameters>
+				<coap-client:query-parameter>hello=there</coap-client:query-parameter>
+				<coap-client:query-parameter>how_are=you</coap-client:query-parameter>
+			</coap-client:query-parameters>
+		</coap-client:async-get>
+		<set-payload value="we don't wait for an answer.." doc:name="Set Payload" />
+	</flow>
+	<flow name="get:/coapclient/async_requests/put:Router">
+		<set-payload value="This is new content." doc:name="Set Payload" />
+		<set-property propertyName="coap.opt.content_format" value="0" doc:name="Set Content Format" />
+		<coap-client:async-put config-ref="my_CoAP_Client" path="/test" responseHandler="my_handler" doc:name="CoAP Async Put" />
+		<set-payload value="we don't wait for an answer.." doc:name="Set Payload" />
+	</flow>
+	<flow name="get:/coapclient/async_requests/post:Router">
+		<set-payload value="This is the new resources content." doc:name="Set Payload" />
+		<set-property propertyName="coap.opt.content_format" value="0" doc:name="Set Content Format" />
+		<coap-client:async-post config-ref="my_CoAP_Client" path="/test" responseHandler="my_handler" doc:name="CoAP Async Post" />
+		<set-payload value="we don't wait for an answer.." doc:name="Set Payload" />
+	</flow>
+	<flow name="get:/coapclient/async_requests/delete:Router">
+		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
+		<coap-client:async-delete config-ref="my_CoAP_Client" path="/test" responseHandler="my_handler" doc:name="CoAP Async Delete" />
+		<set-payload value="we don't wait for an answer.." doc:name="Set Payload" />
+	</flow>
+	<flow name="asynchronous_response_hander">
+		<coap-client:handle-response config-ref="my_CoAP_Client" handlerName="my_handler" doc:name="CoAP Response Handler" />
+		<logger level="INFO" doc:name="Logger" />
+		<logger message="#['Response '+ message.inboundProperties['coap.response.code']           +' received on ' + message.inboundProperties['coap.request.code'] + ' request'          + ' on ' + message.inboundProperties['coap.request.uri']]" level="INFO" doc:name="Logger" />
+		<choice doc:name="If success">
+			<when expression="#[ message.inboundProperties['coap.response.success']]">
+				<logger message="Response indicated success!" level="INFO" doc:name="Logger" />
+			</when>
+			<otherwise>
+				<logger message="Response indicated failure or response timeout occurred!" level="INFO" doc:name="Logger" />
+			</otherwise>
+		</choice>
+		<byte-array-to-string-transformer doc:name="Byte Array to String" />
+		<logger message="#[payload]" level="INFO" doc:name="Logger" />
+	</flow>
+
+</mule>

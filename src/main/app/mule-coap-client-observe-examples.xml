@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+	http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
+	http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+	http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+	http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+
+	<flow name="mule-coap-observe-example">
+		<coap-client:observe config-ref="my_CoAP_Client" path="/obs" doc:name="CoAP Observe" />
+		<logger level="INFO" doc:name="Logger" />
+		<byte-array-to-string-transformer doc:name="Byte Array to String" />
+		<logger message="Got update from server: #[payload]" level="INFO" doc:name="Log payload" />
+	</flow>
+	<flow name="get:/coapclient/observe/start:Router">
+		<coap-client:start-observe config-ref="my_CoAP_Client" path="/obs-pumping" responseHandler="my_handler" doc:name="CoAP start observe" />
+		<logger message="Observe started" level="INFO" doc:name="Logger" />
+	</flow>
+	<flow name="get:/coapclient/observe/stop:Router">
+		<coap-client:stop-observe config-ref="my_CoAP_Client" path="/obs-pumping" doc:name="CoAP Client" />
+		<logger message="Observe stopped" level="INFO" doc:name="Logger" />
+	</flow>
+	<flow name="get:/coapclient/observe/list:Router">
+		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+		<coap-client:list-observations config-ref="my_CoAP_Client" doc:name="CoAP List Observations"/>
+		<foreach doc:name="For Each">
+			<logger message="active observation: #[payload]" level="INFO" doc:name="Log observation"/>
+		</foreach>
+		<object-to-string-transformer mimeType="text/plain" doc:name="Object to String"/>
+	</flow>
+</mule>
