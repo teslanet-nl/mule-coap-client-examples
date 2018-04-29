@@ -10,12 +10,14 @@
 	<flow name="get:/coapclient/requests/get:Router">
 		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
 		<set-property propertyName="coap.opt.accept" value="0" doc:name="Set Accept Option" />
+		
 		<coap-client:get config-ref="my_CoAP_Client" path="/query" doc:name="CoAP Get">
 			<coap-client:query-parameters>
 				<coap-client:query-parameter>hello=there</coap-client:query-parameter>
 				<coap-client:query-parameter>how_are=you</coap-client:query-parameter>
 			</coap-client:query-parameters>
 		</coap-client:get>
+		
 		<logger level="INFO" doc:name="Logger" />
 		<choice doc:name="Choice">
 			<when expression="#[ message.inboundProperties['coap.response.success']                and message.inboundProperties['coap.response.code']  == '2.05' ]">
