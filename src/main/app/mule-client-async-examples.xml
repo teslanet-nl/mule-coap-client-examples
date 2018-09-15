@@ -6,7 +6,7 @@
 	http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
 	http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
 
-	<flow name="get:/coapclient/async_requests/get:Router">
+	<flow name="async_requests_get">
 		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
 		<set-property propertyName="coap.opt.accept" value="0" doc:name="Set Accept Option" />
 		<coap-client:async-get config-ref="my_CoAP_Client" path="/query" responseHandler="my_handler" doc:name="CoAP Async Get">
@@ -17,19 +17,19 @@
 		</coap-client:async-get>
 		<set-payload value="we don't wait for an answer.." doc:name="Set Payload" />
 	</flow>
-	<flow name="get:/coapclient/async_requests/put:Router">
+	<flow name="async_requests_put">
 		<set-payload value="This is new content." doc:name="Set Payload" />
 		<set-property propertyName="coap.opt.content_format" value="0" doc:name="Set Content Format" />
 		<coap-client:async-put config-ref="my_CoAP_Client" path="/test" responseHandler="my_handler" doc:name="CoAP Async Put" />
 		<set-payload value="we don't wait for an answer.." doc:name="Set Payload" />
 	</flow>
-	<flow name="get:/coapclient/async_requests/post:Router">
+	<flow name="async_requests_post">
 		<set-payload value="This is the new resources content." doc:name="Set Payload" />
 		<set-property propertyName="coap.opt.content_format" value="0" doc:name="Set Content Format" />
 		<coap-client:async-post config-ref="my_CoAP_Client" path="/test" responseHandler="my_handler" doc:name="CoAP Async Post" />
 		<set-payload value="we don't wait for an answer.." doc:name="Set Payload" />
 	</flow>
-	<flow name="get:/coapclient/async_requests/delete:Router">
+	<flow name="async_requests_delete">
 		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
 		<coap-client:async-delete config-ref="my_CoAP_Client" path="/test" responseHandler="my_handler" doc:name="CoAP Async Delete" />
 		<set-payload value="we don't wait for an answer.." doc:name="Set Payload" />

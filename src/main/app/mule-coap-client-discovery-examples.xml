@@ -6,7 +6,7 @@
 	http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
 	http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
 	
-	<flow name="get:/coapclient/discovery/discover:Router">
+	<flow name="discovery_discover">
 		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
 		<coap-client:discover config-ref="my_CoAP_Client" doc:name="CoAP Discover"/>
 		<foreach collection="#[payload]" doc:name="For Each">
@@ -15,9 +15,9 @@
 		<object-to-string-transformer doc:name="Object to String"/>
 	</flow>
 
-	<flow name="get:/coapclient/discovery/ping:Router">
+	<flow name="discovery_ping">
 		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
-		<coap-client:ping config-ref="my_CoAP_Client" path="/" doc:name="CoAP Ping"/>
+		<coap-client:ping config-ref="my_CoAP_Client" doc:name="CoAP Ping"/>
 		<choice doc:name="Choice">
 			<when expression="#[ payload == true ]">
 				<set-payload value="Ping succeeded!" mimeType="text/plain" doc:name="Success"/>

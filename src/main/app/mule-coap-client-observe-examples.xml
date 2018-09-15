@@ -12,15 +12,15 @@
 		<byte-array-to-string-transformer doc:name="Byte Array to String" />
 		<logger message="Got update from server: #[payload]" level="INFO" doc:name="Log payload" />
 	</flow>
-	<flow name="get:/coapclient/observe/start:Router">
+	<flow name="observe_start">
 		<coap-client:start-observe config-ref="my_CoAP_Client" path="/obs-pumping" responseHandler="my_handler" doc:name="CoAP start observe" />
 		<logger message="Observe started" level="INFO" doc:name="Logger" />
 	</flow>
-	<flow name="get:/coapclient/observe/stop:Router">
+	<flow name="observe_stop">
 		<coap-client:stop-observe config-ref="my_CoAP_Client" path="/obs-pumping" doc:name="CoAP Client" />
 		<logger message="Observe stopped" level="INFO" doc:name="Logger" />
 	</flow>
-	<flow name="get:/coapclient/observe/list:Router">
+	<flow name="observe_list">
 		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
 		<coap-client:list-observations config-ref="my_CoAP_Client" doc:name="CoAP List Observations"/>
 		<foreach doc:name="For Each">
