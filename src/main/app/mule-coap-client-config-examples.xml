@@ -20,10 +20,10 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
     <coap-client:config name="my_Secured_Client" 
         host="127.0.0.1" 
         secure="true"
-        keyStoreLocation="keyStore.jks"
+        keyStoreLocation="certs/keyStore.jks"
         keyStorePassword="endPass" 
         privateKeyAlias="client" 
-        trustStoreLocation="trustStore.jks"
+        trustStoreLocation="certs/trustStore.jks"
         trustStorePassword="rootPass" 
         trustedRootCertificateAlias="root"
         doc:name="CoAP Client: Configuration"/>
